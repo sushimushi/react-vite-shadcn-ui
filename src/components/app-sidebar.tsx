@@ -74,7 +74,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton className="text-white" asChild>
                     <a href={item.url} >
                       <item.icon className="mx-auto" />
                       <div>{item.title}</div>

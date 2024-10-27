@@ -26,11 +26,11 @@ export function AppNavbar() {
 
         <div className="grow">
           <div className="flex gap-2 max-w-[700px] m-auto">
-          <Button variant={"secondary"}>
+          <Button variant={"secondary"} className="text-red-500">
             <span className="text-blue-500">
               App Credit:
             </span>
-            $1451.28
+            -$1451.28
           </Button>
           <Button variant={"default"}><Wallet className="mx-auto"/> Recharge</Button>
           <Input placeholder="Search" icon={<Search className="mx-auto w-4"/>}></Input>
@@ -39,8 +39,9 @@ export function AppNavbar() {
           <Button variant={"secondary"}><Bell className="mx-auto"/></Button>
           </div>
         </div>
-      <div className="">
-asdjhb
+      <div className="flex items-center justify-center gap-2">
+        <Button variant={'link'} className="text-sm font-semibold mr-1 text-blue-500">Switch Back</Button>
+        <span className="text-sm mr-1"><span className="font-semibold">Signed in </span>as Wareiq@wareiq.com</span>
       </div>
       </NavigationMenuList>
     </NavigationMenu>
