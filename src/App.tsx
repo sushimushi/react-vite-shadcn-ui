@@ -1,5 +1,6 @@
 import Layout from "./app/layout";
 import { ThemeProvider } from "@/components/theme-provider"
+import Dashboard from "./pages/Dashboard";
 
 
 function App() {
@@ -7,7 +8,7 @@ function App() {
     <>
      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Layout>
-        <></>
+        <Dashboard/>
       </Layout>
     </ThemeProvider>
     </>

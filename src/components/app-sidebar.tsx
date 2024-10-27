@@ -71,10 +71,10 @@ export function AppSidebar() {
         <SidebarGroup>
           {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu  className="text-white font-bold">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton className="text-white" asChild>
+                  <SidebarMenuButton asChild>
                     <a href={item.url} >
                       <item.icon className="mx-auto" />
                       <div>{item.title}</div>
