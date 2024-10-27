@@ -10,6 +10,7 @@ import { DataCardTwo } from '@/components/data-card-two';
 import React from 'react';
 import { generateRandomData } from '@/lib/utils';
 import { OrderRevenueChart } from '@/components/charts/chart-bar';
+import { OrderRevenueData } from '@/models/models';
 
 export default function Dashboard() {
   const keys: (keyof typeof sectionTwoData)[] = ["shipping", "ndr"];
@@ -17,18 +18,18 @@ export default function Dashboard() {
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
   })
-  const data = generateRandomData(date);
+  const revenueAndOrderData: OrderRevenueData[] = generateRandomData(date);
 
   // Function to calculate total orders
-  function calculateTotalOrders(data) {
-    return data.reduce((total, entry) => total + entry.orders, 0);
+  function calculateTotalOrders(revenueAndOrderData: OrderRevenueData[]) {
+    return revenueAndOrderData.reduce((total, entry) => total + entry.orders, 0);
   }
 
   // Function to calculate total revenue
-  function calculateTotalRevenue(data) {
-    return data.reduce((total, entry) => total + entry.revenue, 0);
+  function calculateTotalRevenue(revenueAndOrderData: OrderRevenueData[]) {
+    return revenueAndOrderData.reduce((total, entry) => total + entry.revenue, 0);
   }
-  console.log(data);
+  console.log(revenueAndOrderData);
   return (
     <>
       <h1 className='font-semibold text-2xl'>Welcome, <span className='font-bold uppercase'>WareIQ</span></h1>
@@ -67,7 +68,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <section className='pt-8 pb-20'>
+      <section className='pt-8'>
         <Card className=''>
           <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
             Orders & Revenue
@@ -80,20 +81,62 @@ export default function Dashboard() {
               <div className='flex gap-4 grow'>
                 <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
                   <span className='text-xs font-semibold text-gray-700'>Total Orders</span>
-                  <span className="block text-primary font-bold">{calculateTotalOrders(data)}</span>
+                  <span className="block text-primary font-bold">{calculateTotalOrders(revenueAndOrderData)}</span>
                 </div>
                 <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
                   <span className='text-xs font-semibold text-gray-700'>Total Revenue</span>
-                  <span className="block text-primary font-bold">₹{calculateTotalRevenue(data)}</span>
+                  <span className="block text-primary font-bold">₹{calculateTotalRevenue(revenueAndOrderData)}</span>
                 </div>
               </div>
             </div>
             <div className='pr-2'>
-              <OrderRevenueChart data={data} scale={'datewise'} />
+              <OrderRevenueChart data={revenueAndOrderData} scale={'datewise'} />
             </div>
           </main>
         </Card>
       </section>
+
+      <div className="grid grid-cols-2 gap-6 pt-8 pb-8">
+        <section className=''>
+          <Card className=''>
+            <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
+              Zone Wise Distribution
+              <span className='font-normal ml-2 lowercase'>
+                (18-08-2024 to 17-09-2024) <AppTooltip Info={"some random info about the each card."} />
+              </span>
+            </h2>
+            <main className='p-4'>
+
+            </main>
+          </Card>
+        </section>
+        <section className=''>
+          <Card className=''>
+            <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
+              Delivery Timeline
+              <span className='font-normal ml-2 lowercase'>
+                (18-08-2024 to 17-09-2024) <AppTooltip Info={"some random info about the each card."} />
+              </span>
+            </h2>
+            <main className='p-4'>
+
+            </main>
+          </Card>
+        </section>
+        <section className=''>
+          <Card className=''>
+            <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
+              Channel Distribution
+              <span className='font-normal ml-2 lowercase'>
+                (18-08-2024 to 17-09-2024) <AppTooltip Info={"some random info about the each card."} />
+              </span>
+            </h2>
+            <main className='p-4'>
+
+            </main>
+          </Card>
+        </section>
+      </div>
     </>
   );
 }
