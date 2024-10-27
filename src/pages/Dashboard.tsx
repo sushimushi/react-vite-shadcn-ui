@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { ShoppingBag, DollarSign, BoxSelect, Truck } from "lucide-react"
 
 export default function Dashboard() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <>
