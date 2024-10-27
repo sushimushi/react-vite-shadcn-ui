@@ -9,7 +9,7 @@ import { DatePickerWithRange } from '@/components/app-datepicker';
 import { DataCardTwo } from '@/components/data-card-two';
 import React from 'react';
 import { generateRandomData } from '@/lib/utils';
-import {BarChart, OrderRevenueChart} from '@/components/charts/chart-bar';
+import { OrderRevenueChart } from '@/components/charts/chart-bar';
 
 export default function Dashboard() {
   const keys: (keyof typeof sectionTwoData)[] = ["shipping", "ndr"];
@@ -18,6 +18,16 @@ export default function Dashboard() {
     to: addDays(new Date(2022, 0, 20), 20),
   })
   const data = generateRandomData(date);
+
+  // Function to calculate total orders
+  function calculateTotalOrders(data) {
+    return data.reduce((total, entry) => total + entry.orders, 0);
+  }
+
+  // Function to calculate total revenue
+  function calculateTotalRevenue(data) {
+    return data.reduce((total, entry) => total + entry.revenue, 0);
+  }
   console.log(data);
   return (
     <>
@@ -65,9 +75,22 @@ export default function Dashboard() {
               (18-08-2024 to 17-09-2024) <AppTooltip Info={"some random info about the each card."} />
             </span>
           </h2>
-          <main>
-          {/* <BarChart data={data}/> */}
-          <OrderRevenueChart data={data}/>
+          <main className='p-4'>
+            <div>
+              <div className='flex gap-4 grow'>
+                <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
+                  <span className='text-xs font-semibold text-gray-700'>Total Orders</span>
+                  <span className="block text-primary font-bold">{calculateTotalOrders(data)}</span>
+                </div>
+                <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
+                  <span className='text-xs font-semibold text-gray-700'>Total Revenue</span>
+                  <span className="block text-primary font-bold">₹{calculateTotalRevenue(data)}</span>
+                </div>
+              </div>
+            </div>
+            <div className='pr-2'>
+              <OrderRevenueChart data={data} scale={'datewise'} />
+            </div>
           </main>
         </Card>
       </section>

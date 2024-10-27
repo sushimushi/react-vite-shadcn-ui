@@ -24,7 +24,7 @@ export function generateRandomData(dateRange: any): OrderData[] {
 
   while (currentDate <= end) {
     // const revenueChance = Math.random(); // Random value between 0 and 1
-    const revenue = (getRandomInt(1000, 100000) / 100).toFixed(2); // Random revenue between 1000 and 100000
+    const revenue = (getRandomInt(1000, 25000)).toFixed(2); // Random revenue between 1000 and 100000
     const orders = getRandomInt(10, 100); // Random number of orders between 10 and 100
     const picked = getRandomInt(10, 100).toFixed(2); // Random number of picked orders between 10 and 100
     const delivered = getRandomInt(10, +picked).toFixed(2); // Random number of delivered orders between 10 and picked
@@ -40,6 +40,11 @@ export function generateRandomData(dateRange: any): OrderData[] {
     // Increment the date by one day
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  data[10].revenue = 0
+  // data[10].revenue = 0 
+  // data[10].orders = 0 
+  // data[4].orders = 0 
+  // data[4].revenue = 0 
+  // data[15].orders = 0 
+  // data[15].revenue = 0 
   return data;
 }

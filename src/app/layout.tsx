@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     </div>
       <SidebarProvider>
         <AppSidebar />
-        <main className="pt-20 px-6 w-full">
+        <main className="pt-20 px-6 w-full md:max-w-[calc(100%-128px)]">
           {/* <SidebarTrigger /> */}
           {children}
         </main>
