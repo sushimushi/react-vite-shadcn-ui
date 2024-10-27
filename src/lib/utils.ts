@@ -23,21 +23,24 @@ export function generateRandomData(dateRange: any): OrderData[] {
   const getRandomInt = (min: number, max: number): number => Math.floor(Math.random() * (max - min + 1)) + min;
 
   while (currentDate <= end) {
-    const revenue = (getRandomInt(1000, 100000) / 100).toFixed(2); // Random revenue between 1000 and 100000
+    const revenueChance = Math.random(); // Random value between 0 and 1
+    const revenue = revenueChance < 0.2 // 20% chance to set revenue to 0
+      ? '0'
+      : (getRandomInt(1000, 100000) / 100).toFixed(2); // Random revenue between 1000 and 100000
     const orders = getRandomInt(10, 100); // Random number of orders between 10 and 100
-    const picked = getRandomInt(10, 100).toFixed(2); // Random number of orders between 10 and 100
-    const delivered = getRandomInt(10, +picked).toFixed(2); // Random number of orders between 10 and 100
+    const picked = getRandomInt(10, 100).toFixed(2); // Random number of picked orders between 10 and 100
+    const delivered = getRandomInt(10, +picked).toFixed(2); // Random number of delivered orders between 10 and picked
 
-      data.push({
-          date: currentDate.toISOString().split('T')[0], // Format: YYYY-MM-DD
-          orders,
-          revenue: parseFloat(revenue), // Convert revenue to a float
-          picked: parseFloat(picked),
-          delivered: parseFloat(delivered),
-      });
+    data.push({
+      date: currentDate.toISOString().split('T')[0], // Format: YYYY-MM-DD
+      orders,
+      revenue: parseFloat(revenue), // Convert revenue to a float
+      picked: parseFloat(picked),
+      delivered: parseFloat(delivered),
+    });
 
-      // Increment the date by one day
-      currentDate.setDate(currentDate.getDate() + 1);
+    // Increment the date by one day
+    currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return data;

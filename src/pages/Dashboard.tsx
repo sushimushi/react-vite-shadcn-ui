@@ -9,6 +9,7 @@ import { DatePickerWithRange } from '@/components/app-datepicker';
 import { DataCardTwo } from '@/components/data-card-two';
 import React from 'react';
 import { generateRandomData } from '@/lib/utils';
+import {BarChart} from '@/components/charts/chart-bar';
 
 export default function Dashboard() {
   const keys: (keyof typeof sectionTwoData)[] = ["shipping", "ndr"];
@@ -56,7 +57,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <section className='pt-8'>
+      <section className='pt-8 pb-20'>
         <Card className=''>
           <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
             Orders & Revenue
@@ -65,7 +66,7 @@ export default function Dashboard() {
             </span>
           </h2>
           <main>
-
+          <BarChart data={data}/>
           </main>
         </Card>
       </section>
