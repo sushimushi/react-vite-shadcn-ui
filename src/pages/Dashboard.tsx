@@ -8,21 +8,27 @@ export default function Dashboard() {
   return (
     <>
       <h1 className='font-semibold text-2xl'>Welcome, <span className='font-bold uppercase'>WareIQ</span></h1>
-      <section className='grid grid-cols-5 gap-6 pt-8'>
-        {sectionOneData.map((item, index) => (
-          <div>
-            <h2 className="text-sm font-bold mb-2">
-              {item.title}
-              <AppTooltip Info={"some random info about the each card."}/>
-            </h2>
-            <div className='col-span-1' key={index}>
-              <DataCard Icon={<item.Icon />} />
+      <section className='pt-8 '>
+        <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
+          {sectionOneData.map((item, index) => (
+            <div>
+              <h2 className="text-sm font-bold mb-2">
+                {item.title}
+                <AppTooltip Info={"some random info about the each card."} />
+              </h2>
+              <div className='col-span-1' key={index}>
+                <DataCard Icon={<item.Icon />} />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
-      <section>
+      <section className='pt-8'>
+        <header className='pb-2 border-b'>
+          <h2 className='font-semibold text-2xl w-full'>Overview</h2>
+
+        </header>
 
       </section>
     </>
