@@ -16,13 +16,12 @@ export function DataCard({ Icon }: { Icon: React.ReactNode }) {
         </div>
       </div>
       <div className="grid gap-4 py-4">
-        <CardHeader className="p-0">
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-        </CardHeader>
         <CardContent className="p-0">
           <p>Card Content</p>
         </CardContent>
+        <CardHeader className="p-0">
+          <CardTitle className="text-primary">Card Title</CardTitle>
+        </CardHeader>
         <CardFooter className="p-0">
           <p>Card Footer</p>
         </CardFooter>
