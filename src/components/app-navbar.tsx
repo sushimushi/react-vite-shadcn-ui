@@ -26,17 +26,17 @@ export function AppNavbar() {
 
         <div className="grow">
           <div className="flex gap-2 max-w-[700px] m-auto">
-          <Button variant={"secondary"} className="text-red-500">
+          <Button variant={"ghost"} className="text-red-500">
             <span className="text-blue-500">
               App Credit:
             </span>
             -$1451.28
           </Button>
-          <Button variant={"default"}><Wallet className="mx-auto"/> Recharge</Button>
+          <Button><Wallet className="mx-auto"/> Recharge</Button>
           <Input placeholder="Search" icon={<Search className="mx-auto w-4"/>}></Input>
-          <Button variant={"secondary"}><Plus className="mx-auto"/></Button>
-          <Button variant={"secondary"}><Download className="mx-auto"/></Button>
-          <Button variant={"secondary"}><Bell className="mx-auto"/></Button>
+          <Button variant={"ghost"}><Plus className="mx-auto"/></Button>
+          <Button variant={"ghost"}><Download className="mx-auto"/></Button>
+          <Button variant={"ghost"}><Bell className="mx-auto"/></Button>
           </div>
         </div>
       <div className="flex items-center justify-center gap-2">
