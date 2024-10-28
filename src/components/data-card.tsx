@@ -1,13 +1,12 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 
-export function DataCard({ Icon }: { Icon: React.ReactNode }) {
+export function DataCard({ Icon, data }: { Icon: React.ReactNode, data:any }) {
   return (
     <Card className="flex">
       <div className="grid place-content-center max-w-20 grow">
@@ -20,10 +19,10 @@ export function DataCard({ Icon }: { Icon: React.ReactNode }) {
           <p>Today</p>
         </CardContent>
         <CardHeader className="p-0">
-          <CardTitle className="text-primary">Card Title</CardTitle>
+          <CardTitle className="text-primary">{data.today}</CardTitle>
         </CardHeader>
         <CardFooter className="p-0">
-          <p>Y'day</p>
+          <p>Y'day - {data.yesterday}</p>
         </CardFooter>
       </div>
     </Card>

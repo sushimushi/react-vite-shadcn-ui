@@ -17,10 +17,13 @@ export interface OrderRevenueData {
   revenue: number;
 }
 
+export type scaleType = 'date' | 'week' | 'month' | 'year'; 
+export type typeType = 'orders' | 'picked' | 'delivered';
 // Define the props for the OrderRevenueChart component
 export interface OrderRevenueChartProps {
   data: OrderRevenueData[];
-  scale: 'datewise' | 'weekwise' | 'monthwise' | 'yearwise'; // Allowed scales
+  scale: 'date' | 'week' | 'month' | 'year'; // Allowed scales
+  type: 'orders' | 'picked' | 'delivered';
 }
 
 export interface OrderRevenueData {

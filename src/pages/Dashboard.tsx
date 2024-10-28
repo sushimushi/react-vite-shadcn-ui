@@ -1,155 +1,182 @@
+import { addDays } from 'date-fns';
+import { Card } from "@/components/ui/card";
+import { useEffect, useState } from 'react';
 import { DataCard } from '@/components/data-card';
 import { AppTooltip } from '@/components/app-tooltip';
-import { Card } from "@/components/ui/card"
-import { DateRange } from "react-day-picker"
-import { addDays, format } from "date-fns"
-
-import { ShoppingBag, DollarSign, BoxSelect, Truck } from "lucide-react"
-import { DatePickerWithRange } from '@/components/app-datepicker';
 import { DataCardTwo } from '@/components/data-card-two';
-import React from 'react';
-import { generateRandomData } from '@/lib/utils';
 import { OrderRevenueChart } from '@/components/charts/chart-bar';
-import { OrderRevenueData } from '@/models/models';
+import { DatePickerWithRange } from '@/components/app-datepicker';
+import { OrderRevenueData, scaleType, typeType } from '@/models/models';
+import { ShoppingBag, DollarSign, BoxSelect, Truck } from 'lucide-react';
+import { generateRandomData, sectionTwoData, generateRandomDashboardData } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import PieChart from '@/components/charts/chart-pie';
+
 
 export default function Dashboard() {
   const keys: (keyof typeof sectionTwoData)[] = ["shipping", "ndr"];
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  })
-  const revenueAndOrderData: OrderRevenueData[] = generateRandomData(date);
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2012, 0, 20),
+    to: new Date(2024, 0, 20),
+  });
 
-  // Function to calculate total orders
-  function calculateTotalOrders(revenueAndOrderData: OrderRevenueData[]) {
-    return revenueAndOrderData.reduce((total, entry) => total + entry.orders, 0);
-  }
+  const [selectedType, setSelectedType] = useState<typeType>('orders');
+  const [selectedScale, setScaleScale] = useState<scaleType>('date');
+  const [revenueAndOrderData, setRevenueAndOrderData] = useState<OrderRevenueData[]>([]);
+  const [dashboardData, setDashboardData] = useState({
+    ordersRevenue: [],
+    pickedRevenue: [],
+    deliveredRevenue: [],
+    zoneDistribution: [],
+    highlight:{
+      orders: {
+        today: 0,
+        yesterday: 0
+      },
+      revenue: {
+        today: 0,
+        yesterday: 0
+      },
+      picked: {
+        today: 0,
+        yesterday: 0
+      },
+      delivered: {
+        today: 0,
+        yesterday: 0
+      },
+      rto_oto: {
+        today: 0,
+        yesterday: 0
+      }
+    }
+  });
 
-  // Function to calculate total revenue
-  function calculateTotalRevenue(revenueAndOrderData: OrderRevenueData[]) {
-    return revenueAndOrderData.reduce((total, entry) => total + entry.revenue, 0);
-  }
-  console.log(revenueAndOrderData);
+  console.log()
+
+  useEffect(() => {
+    setRevenueAndOrderData(generateRandomData(date));
+    setDashboardData(generateRandomDashboardData(date));
+  }, [date]);
+
+  const calculateTotalOrders = (data: OrderRevenueData[]) =>
+    data.reduce((total, entry) => total + entry.orders, 0);
+
+  const calculateTotalRevenue = (data: OrderRevenueData[]) =>
+    data.reduce((total, entry) => total + entry.revenue, 0);
+
   return (
     <>
       <h1 className='font-semibold text-2xl'>Welcome, <span className='font-bold uppercase'>WareIQ</span></h1>
-      <section className='pt-8 '>
+
+      <section className='pt-8'>
         <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
           {sectionOneData.map((item, index) => (
-            <div>
+            <div key={index}>
               <h2 className="text-sm font-bold mb-2">
                 {item.title}
                 <AppTooltip Info={"some random info about the each card."} />
               </h2>
-              <div className='col-span-1' key={index}>
-                <DataCard Icon={<item.Icon />} />
-              </div>
+              <DataCard Icon={<item.Icon />} data={dashboardData.highlight[item.name]} />
             </div>
           ))}
         </div>
       </section>
 
       <section className='pt-8'>
-        <header className='pb-2 border-b flex space-between'>
+        <header className='pb-2 border-b flex justify-between'>
           <h2 className='font-semibold text-2xl w-full'>Overview</h2>
           <DatePickerWithRange dateSetter={setDate} />
         </header>
         <div className="mt-4 grid grid-cols-2 gap-6">
-          {keys.map((key) => (
-            <div>
+          {keys.map(key => (
+            <div key={key}>
               <h2 className="text-sm font-bold mb-2 uppercase">
-                {key} <span className='font-normal ml-2 lowercase'>({sectionTwoData[key].from} to {sectionTwoData[key].to})</span>
+                {key} <span className='font-normal ml-2 lowercase'>({date.from.toLocaleDateString()} to {date.to.toLocaleDateString()})</span>
               </h2>
-              <div key={key}>
-                <DataCardTwo data={sectionTwoData[key]} />
-              </div>
+              <DataCardTwo data={sectionTwoData[key]} />
             </div>
           ))}
         </div>
       </section>
 
       <section className='pt-8'>
-        <Card className=''>
+        <Card>
           <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
             Orders & Revenue
             <span className='font-normal ml-2 lowercase'>
-              (18-08-2024 to 17-09-2024) <AppTooltip Info={"some random info about the each card."} />
+              ({date.from.toLocaleDateString()} to {date.to.toLocaleDateString()}) <AppTooltip Info={"some random info about the each card."} />
             </span>
           </h2>
           <main className='p-4'>
-            <div>
+            <div className='flex justify-between'>
               <div className='flex gap-4 grow'>
-                <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
-                  <span className='text-xs font-semibold text-gray-700'>Total Orders</span>
-                  <span className="block text-primary font-bold">{calculateTotalOrders(revenueAndOrderData)}</span>
-                </div>
-                <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
-                  <span className='text-xs font-semibold text-gray-700'>Total Revenue</span>
-                  <span className="block text-primary font-bold">₹{calculateTotalRevenue(revenueAndOrderData)}</span>
-                </div>
+                <InfoCard label="Total Orders" value={calculateTotalOrders(revenueAndOrderData)} />
+                <InfoCard label="Total Revenue" value={`₹${calculateTotalRevenue(revenueAndOrderData).toLocaleString('en-IN')}`} />
+              </div>
+
+              <div className='flex gap-4'>
+                <Select value={selectedScale} onValueChange={setScaleScale}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["date", "week", "month", "year"].map(scale => (
+                      <SelectItem key={scale} value={scale}>{scale.charAt(0).toUpperCase() + scale.slice(1)}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={selectedType} onValueChange={setSelectedType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["orders", "picked", "delivered"].map(type => (
+                      <SelectItem key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className='pr-2'>
-              <OrderRevenueChart data={revenueAndOrderData} scale={'datewise'} />
+              <OrderRevenueChart data={dashboardData.ordersRevenue} scale={selectedScale} type={selectedType} />
             </div>
           </main>
         </Card>
       </section>
 
       <div className="grid grid-cols-2 gap-6 pt-8 pb-8">
-        <section className=''>
-          <Card className=''>
+        {["Zone Wise Distribution", "Delivery Timeline", "Channel Distribution"].map(title => (
+          <Card key={title}>
             <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
-              Zone Wise Distribution
+              {title}
               <span className='font-normal ml-2 lowercase'>
-                (18-08-2024 to 17-09-2024) <AppTooltip Info={"some random info about the each card."} />
+                ({date.from.toLocaleDateString()} to {date.to.toLocaleDateString()}) <AppTooltip Info={"some random info about the each card."} />
               </span>
             </h2>
             <main className='p-4'>
-
+            <PieChart data={dashboardData.zoneDistribution}/>
             </main>
           </Card>
-        </section>
-        <section className=''>
-          <Card className=''>
-            <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
-              Delivery Timeline
-              <span className='font-normal ml-2 lowercase'>
-                (18-08-2024 to 17-09-2024) <AppTooltip Info={"some random info about the each card."} />
-              </span>
-            </h2>
-            <main className='p-4'>
-
-            </main>
-          </Card>
-        </section>
-        <section className=''>
-          <Card className=''>
-            <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
-              Channel Distribution
-              <span className='font-normal ml-2 lowercase'>
-                (18-08-2024 to 17-09-2024) <AppTooltip Info={"some random info about the each card."} />
-              </span>
-            </h2>
-            <main className='p-4'>
-
-            </main>
-          </Card>
-        </section>
+        ))}
       </div>
     </>
   );
 }
 
-const sectionOneData = [
-  { Icon: ShoppingBag, title: "Orders", amount: 6, percentage: 0, trend: "up", desc: "Sidebars are one of the most complex components to build. They are central to any application and often contain a lot of moving parts." },
-  { Icon: DollarSign, title: "Revenue", amount: 2610, percentage: 0, trend: "up", desc: "Sidebars are one of the most complex components to build. They are central to any application and often contain a lot of moving parts." },
-  { Icon: BoxSelect, title: "Picked", amount: 0, percentage: 0, trend: "up", desc: "Sidebars are one of the most complex components to build. They are central to any application and often contain a lot of moving parts." },
-  { Icon: Truck, title: "Delivered", amount: 0, percentage: 100, trend: "up", desc: "Sidebars are one of the most complex components to build. They are central to any application and often contain a lot of moving parts." },
-  { Icon: DollarSign, title: "RTO/DTO", amount: 0, percentage: 0, trend: "up", desc: "Sidebars are one of the most complex components to build. They are central to any application and often contain a lot of moving parts." }
-]
+const InfoCard = ({ label, value }:{label:string, value: number}) => (
+  <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
+    <span className='text-xs font-semibold text-gray-700'>{label}</span>
+    <span className="block text-primary font-bold">{value}</span>
+  </div>
+);
 
-const sectionTwoData = {
-  shipping: { from: "17-09-2024", to: "18-08-2024", total: { desc: "Lorem Ipsum to use as filler text ", title: "Active Shipments", value: 10 }, yetToBePicked: { desc: "Lorem Ipsum to use as filler text ", title: "Yet to be Picked", value: 3 }, openShipment: { desc: "Lorem Ipsum to use as filler text ", title: "Open Shipment", value: 1 }, closedShipment: { desc: "Lorem Ipsum to use as filler text ", title: "RTO Post NDR", value: 6 } },
-  ndr: { from: "17-09-2024", to: "18-08-2024", total: { desc: "Lorem Ipsum to use as filler text ", title: "NDR Raised", value: 2 }, ndrActive: { desc: "Lorem Ipsum to use as filler text ", title: "NDR Active", value: 1 }, ndrDelivered: { desc: "Lorem Ipsum to use as filler text ", title: "NDR Delivered", value: 1 }, rtoPostNdr: { desc: "Lorem Ipsum to use as filler text ", title: "Closed Shipment", value: 0 } },
-}
+const sectionOneData = [
+  { Icon: ShoppingBag, title: "Orders", name: "orders" },
+  { Icon: DollarSign, title: "Revenue", name: "revenue" },
+  { Icon: BoxSelect, title: "Picked", name: "picked" },
+  { Icon: Truck, title: "Delivered", name: "delivered" },
+  { Icon: DollarSign, title: "RTO/DTO", name: "rto_oto" },
+].map(item => ({ ...item, amount: 0, percentage: 0, trend: "up", desc: "Sidebars are one of the most complex components to build." }));
+

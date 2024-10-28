@@ -19,14 +19,20 @@ interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 export function DatePickerWithRange({
-  className,dateSetter
+  className, dateSetter
 }: DatePickerWithRangeProps) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  })
+  const [date, setDate] = React.useState<DateRange | undefined>(() => {
+    const today = new Date();
+    const oneMonthBack = new Date();
+    oneMonthBack.setMonth(today.getMonth() - 1); // Set the month to one month back
+
+    return {
+      from: oneMonthBack,
+      to: today,
+    };
+  });
   dateSetter(date)
-  
+
   return (
     <div data-theme="light" className={cn("grid gap-2", className)}>
       <Popover>
