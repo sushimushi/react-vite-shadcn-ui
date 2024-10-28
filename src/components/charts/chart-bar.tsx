@@ -125,7 +125,7 @@ export const OrderRevenueChart: React.FC<OrderRevenueChartProps> = ({ data, scal
             .enter()
             .append('circle')
             .attr('class', 'dot')
-            .attr('cx', d => x(d.date) || 0 + x.bandwidth() / 2)
+            .attr('cx', d => x(d.date) + x.bandwidth() / 2)
             .attr('cy', d => yRevenue(d.revenue))
             .attr('r', '0.3rem')
             .attr('fill', 'orange')
@@ -159,7 +159,7 @@ export const OrderRevenueChart: React.FC<OrderRevenueChartProps> = ({ data, scal
 
         // Draw lines for each segment of continuous data
         const line = d3.line<OrderRevenueData>()
-            .x(d => x(d.date) || 0 + x.bandwidth() / 2)
+            .x(d => x(d.date)+ x.bandwidth() / 2)
             .y(d => yRevenue(d.revenue))
             .curve(d3.curveMonotoneX);
 
