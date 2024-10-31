@@ -52,7 +52,12 @@ export default function Dashboard() {
     }
   });
 
-  console.log()
+  const handleScaleChange = (value: string) => {
+    setScaleScale(value as scaleType); // Cast value to the type scaleType if appropriate
+  };
+  const handleTypeChange = (value: string) => {
+    setSelectedType(value as typeType); // Cast value to the type typeType if appropriate
+  };
 
   useEffect(() => {
     setRevenueAndOrderData(generateRandomData(date));
@@ -78,6 +83,7 @@ export default function Dashboard() {
                 {item.title}
                 <AppTooltip Info={"some random info about the each card."} />
               </h2>
+              {/* @ts-ignore */}
               <DataCard Icon={<item.Icon />} data={dashboardData.highlight[item.name]} />
             </div>
           ))}
@@ -112,12 +118,12 @@ export default function Dashboard() {
           <main className='p-4'>
             <div className='flex justify-between'>
               <div className='flex gap-4 grow'>
-                <InfoCard label="Total Orders" value={calculateTotalOrders(revenueAndOrderData)} />
+                <InfoCard label="Total Orders" value={calculateTotalOrders(revenueAndOrderData).toString()} />
                 <InfoCard label="Total Revenue" value={`₹${calculateTotalRevenue(revenueAndOrderData).toLocaleString('en-IN')}`} />
               </div>
 
               <div className='flex gap-4'>
-                <Select value={selectedScale} onValueChange={setScaleScale}>
+                <Select value={selectedScale} onValueChange={handleScaleChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select an option" />
                   </SelectTrigger>
@@ -128,7 +134,7 @@ export default function Dashboard() {
                   </SelectContent>
                 </Select>
 
-                <Select value={selectedType} onValueChange={setSelectedType}>
+                <Select value={selectedType} onValueChange={handleTypeChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select an option" />
                   </SelectTrigger>
