@@ -1,4 +1,3 @@
-import { addDays } from 'date-fns';
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from 'react';
 import { DataCard } from '@/components/data-card';
@@ -11,6 +10,7 @@ import { ShoppingBag, DollarSign, BoxSelect, Truck } from 'lucide-react';
 import { generateRandomData, sectionTwoData, generateRandomDashboardData } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PieChart from '@/components/charts/chart-pie';
+import { DateRange } from "react-day-picker";
 
 
 export default function Dashboard() {
@@ -56,6 +56,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     setRevenueAndOrderData(generateRandomData(date));
+    //@ts-ignore
     setDashboardData(generateRandomDashboardData(date));
   }, [date]);
 
@@ -92,7 +93,7 @@ export default function Dashboard() {
           {keys.map(key => (
             <div key={key}>
               <h2 className="text-sm font-bold mb-2 uppercase">
-                {key} <span className='font-normal ml-2 lowercase'>({date.from.toLocaleDateString()} to {date.to.toLocaleDateString()})</span>
+                {key} <span className='font-normal ml-2 lowercase'>({date!.from!.toLocaleDateString()} to {date!.to!.toLocaleDateString()})</span>
               </h2>
               <DataCardTwo data={sectionTwoData[key]} />
             </div>
@@ -105,7 +106,7 @@ export default function Dashboard() {
           <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
             Orders & Revenue
             <span className='font-normal ml-2 lowercase'>
-              ({date.from.toLocaleDateString()} to {date.to.toLocaleDateString()}) <AppTooltip Info={"some random info about the each card."} />
+              ({date!.from!.toLocaleDateString()} to {date!.to!.toLocaleDateString()}) <AppTooltip Info={"some random info about the each card."} />
             </span>
           </h2>
           <main className='p-4'>
@@ -152,7 +153,7 @@ export default function Dashboard() {
             <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
               {title}
               <span className='font-normal ml-2 lowercase'>
-                ({date.from.toLocaleDateString()} to {date.to.toLocaleDateString()}) <AppTooltip Info={"some random info about the each card."} />
+                ({date!.from!.toLocaleDateString()} to {date!.to!.toLocaleDateString()}) <AppTooltip Info={"some random info about the each card."} />
               </span>
             </h2>
             <main className='p-4'>
@@ -165,7 +166,7 @@ export default function Dashboard() {
   );
 }
 
-const InfoCard = ({ label, value }:{label:string, value: number}) => (
+const InfoCard = ({ label, value }:{label:string, value: string}) => (
   <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
     <span className='text-xs font-semibold text-gray-700'>{label}</span>
     <span className="block text-primary font-bold">{value}</span>

@@ -1,23 +1,28 @@
-import React, { useEffect, useRef } from 'react';
+//@ts-nocheck
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-const PieChart = ({ data }) => {
+const PieChart = ({ data }: any) => {
     const svgRef = useRef();
 
     useEffect(() => {
-        const svg = d3.select(svgRef.current);
+        let svg
+        if(svgRef.current){
+            svg = d3.select(svgRef.current);
+        } 
         const width = 300;
         const height = 300;
         const radius = Math.min(width, height) / 2;
 
         // Clear previous content
-        svg.selectAll('*').remove();
+        
+        svg && svg.selectAll('*').remove();
 
         // Create a color scale
         const color = d3.scaleOrdinal(d3.schemeCategory10);
 
         // Create a pie layout
-        const pie = d3.pie().value(d => d[1]); // Use the second element of the entries (value)
+        const pie = d3.pie().value((d:any) => d[1]); // Use the second element of the entries (value)
         
         // Create an arc generator
         const arc = d3.arc()
@@ -25,17 +30,18 @@ const PieChart = ({ data }) => {
             .outerRadius(radius - 10);
 
         // Create a group for the pie chart
-        const g = svg.append('g')
+        const g = svg && svg.append('g')
             .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
         // Draw the pie slices
-        g.selectAll('.slice')
-            .data(pie(Object.entries(data))) // Use Object.entries() to convert the data
+        g && g.selectAll('.slice')
+            .data(pie(Object.entries(data) as any)) // Use Object.entries() to convert the data
             .enter()
             .append('g')
             .attr('class', 'slice')
             .append('path')
-            .attr('d', arc)
+            .attr('d', arc as any)
+            //@ts-ignore
             .attr('fill', (d, i) => color(i));
 
         // Add labels

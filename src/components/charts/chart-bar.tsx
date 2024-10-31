@@ -125,6 +125,7 @@ export const OrderRevenueChart: React.FC<OrderRevenueChartProps> = ({ data, scal
             .enter()
             .append('circle')
             .attr('class', 'dot')
+            // @ts-ignore
             .attr('cx', d => x(d.date) + x.bandwidth() / 2)
             .attr('cy', d => yRevenue(d.revenue))
             .attr('r', '0.3rem')
@@ -159,6 +160,7 @@ export const OrderRevenueChart: React.FC<OrderRevenueChartProps> = ({ data, scal
 
         // Draw lines for each segment of continuous data
         const line = d3.line<OrderRevenueData>()
+        //@ts-ignore
             .x(d => x(d.date)+ x.bandwidth() / 2)
             .y(d => yRevenue(d.revenue))
             .curve(d3.curveMonotoneX);
@@ -198,6 +200,7 @@ export const OrderRevenueChart: React.FC<OrderRevenueChartProps> = ({ data, scal
         // Y-left axis for orders without domain line
         const yAxisLeftGroup = svg.append('g')
             .attr('transform', `translate(${margin.left},0)`)
+            //@ts-ignore
             .call(d3.axisLeft(yOrders).ticks(noOfTicks).tickFormat(d => d >= 1000 ? `${d / 1000}k` : d), 0);
         yAxisLeftGroup.select('.domain').remove(); // Remove the domain line
         yAxisLeftGroup.selectAll('line').remove();
@@ -205,6 +208,7 @@ export const OrderRevenueChart: React.FC<OrderRevenueChartProps> = ({ data, scal
         // Y-right axis for revenue without domain line
         const yAxisRightGroup = svg.append('g')
             .attr('transform', `translate(${width - margin.right},0)`)
+            //@ts-ignore
             .call(d3.axisRight(yRevenue).ticks(noOfTicks).tickFormat(d => d >= 1000 ? `${d / 1000}k` : d), 0);
         yAxisRightGroup.select('.domain').remove(); // Remove the domain line
         yAxisRightGroup.selectAll('line').remove(); // Remove all tick lines
