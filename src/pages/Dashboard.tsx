@@ -5,9 +5,9 @@ import { AppTooltip } from '@/components/app-tooltip';
 import { DataCardTwo } from '@/components/data-card-two';
 import { OrderRevenueChart } from '@/components/charts/chart-bar';
 import { DatePickerWithRange } from '@/components/app-datepicker';
-import { OrderRevenueData, scaleType, typeType } from '@/models/models';
+import { OrderRevenueData, scaleType, typeType, HighlightType } from '@/models/models';
 import { ShoppingBag, DollarSign, BoxSelect, Truck } from 'lucide-react';
-import { generateRandomData, sectionTwoData, generateRandomDashboardData } from '@/lib/utils';
+import { generateRandomData, sectionTwoData, generateHighlights, calculateZoneTotals, calculateDeliveryTimeTotals, calculateChannelTotals } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PieChart from '@/components/charts/chart-pie';
 import { DateRange } from "react-day-picker";
@@ -23,46 +23,27 @@ export default function Dashboard() {
   const [selectedType, setSelectedType] = useState<typeType>('orders');
   const [selectedScale, setScaleScale] = useState<scaleType>('date');
   const [revenueAndOrderData, setRevenueAndOrderData] = useState<OrderRevenueData[]>([]);
-  const [dashboardData, setDashboardData] = useState({
-    ordersRevenue: [],
-    pickedRevenue: [],
-    deliveredRevenue: [],
-    zoneDistribution: [],
-    highlight:{
-      orders: {
-        today: 0,
-        yesterday: 0
-      },
-      revenue: {
-        today: 0,
-        yesterday: 0
-      },
-      picked: {
-        today: 0,
-        yesterday: 0
-      },
-      delivered: {
-        today: 0,
-        yesterday: 0
-      },
-      rto_oto: {
-        today: 0,
-        yesterday: 0
-      }
-    }
-  });
+  const [highlights, setHighlights] = useState<HighlightType>( {
+      orders: { today: 0, yesterday: 0 },
+      revenue: { today: 0, yesterday: 0 },
+      picked: { today: 0, yesterday: 0 },
+      delivered: { today: 0, yesterday: 0 },
+      rto_oto: { today: 0, yesterday: 0 },
+    });
 
   const handleScaleChange = (value: string) => {
-    setScaleScale(value as scaleType); // Cast value to the type scaleType if appropriate
+    setScaleScale(value as scaleType);
   };
+
   const handleTypeChange = (value: string) => {
-    setSelectedType(value as typeType); // Cast value to the type typeType if appropriate
+    setSelectedType(value as typeType);
   };
 
   useEffect(() => {
     setRevenueAndOrderData(generateRandomData(date));
+    calculateZoneTotals(revenueAndOrderData);
     //@ts-ignore
-    setDashboardData(generateRandomDashboardData(date));
+    setHighlights(generateHighlights(date));
   }, [date]);
 
   const calculateTotalOrders = (data: OrderRevenueData[]) =>
@@ -84,7 +65,7 @@ export default function Dashboard() {
                 <AppTooltip Info={"some random info about the each card."} />
               </h2>
               {/* @ts-ignore */}
-              <DataCard Icon={<item.Icon />} data={dashboardData.highlight[item.name]} />
+              <DataCard Icon={<item.Icon />} data={highlights[item.name]} />
             </div>
           ))}
         </div>
@@ -147,23 +128,27 @@ export default function Dashboard() {
               </div>
             </div>
             <div className='pr-2'>
-              <OrderRevenueChart data={dashboardData.ordersRevenue} scale={selectedScale} type={selectedType} />
+              <OrderRevenueChart data={revenueAndOrderData} scale={selectedScale} type={selectedType} />
             </div>
           </main>
         </Card>
       </section>
 
       <div className="grid grid-cols-2 gap-6 pt-8 pb-8">
-        {["Zone Wise Distribution", "Delivery Timeline", "Channel Distribution"].map(title => (
-          <Card key={title}>
+        {Object.keys(pieChartMap).map((key, index) => (
+          <Card key={index}>
             <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
-              {title}
+              {pieChartMap[key]}
               <span className='font-normal ml-2 lowercase'>
                 ({date!.from!.toLocaleDateString()} to {date!.to!.toLocaleDateString()}) <AppTooltip Info={"some random info about the each card."} />
               </span>
             </h2>
             <main className='p-4'>
-            <PieChart data={dashboardData.zoneDistribution}/>
+              { 
+              key == 'zoneDistribution' ? <PieChart data={calculateZoneTotals(revenueAndOrderData)} /> : 
+              key == 'deliveredTimeline' ?  <PieChart data={calculateDeliveryTimeTotals(revenueAndOrderData)} /> :
+              <PieChart data={calculateChannelTotals(revenueAndOrderData)} />
+              } 
             </main>
           </Card>
         ))}
@@ -172,7 +157,7 @@ export default function Dashboard() {
   );
 }
 
-const InfoCard = ({ label, value }:{label:string, value: string}) => (
+const InfoCard = ({ label, value }: { label: string, value: string }) => (
   <div className="bg-gray-100 rounded-lg w-48 px-4 py-2">
     <span className='text-xs font-semibold text-gray-700'>{label}</span>
     <span className="block text-primary font-bold">{value}</span>
@@ -187,3 +172,6 @@ const sectionOneData = [
   { Icon: DollarSign, title: "RTO/DTO", name: "rto_oto" },
 ].map(item => ({ ...item, amount: 0, percentage: 0, trend: "up", desc: "Sidebars are one of the most complex components to build." }));
 
+const pieChartMap: Record<string, string> = {
+  zoneDistribution: "Zone Wise Distribution", deliveredTimeline: "Delivery Timeline", channelDistribution: "Channel Distribution"
+}

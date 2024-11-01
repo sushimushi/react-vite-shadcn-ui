@@ -1,17 +1,10 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { OrderRevenueData } from "@/models/models"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-interface OrderData {
-  date: string;     // Date in 'YYYY-MM-DD' format
-  orders: number;   // Number of orders
-  revenue: number;  // Revenue as a float
-  picked: number;   // Picked as a float
-  delivered: number // Deliveredd as a float
-}
-
 
 export const sectionTwoData = {
   shipping: {
@@ -28,8 +21,8 @@ export const sectionTwoData = {
   },
 };
 
-export function generateRandomData(dateRange: any): OrderData[] {
-  const data: OrderData[] = [];
+export function generateRandomData(dateRange: any): OrderRevenueData[] {
+  const data: OrderRevenueData[] = [];
   const start = new Date(dateRange.from);
   const end = new Date(dateRange.to);
   let currentDate = start;
@@ -37,39 +30,56 @@ export function generateRandomData(dateRange: any): OrderData[] {
   // Function to get a random integer between min and max (inclusive)
   const getRandomInt = (min: number, max: number): number => Math.floor(Math.random() * (max - min + 1)) + min;
 
+  // Function to get a random item from an array
+  const getRandomItem = <T>(items: T[]): T => items[getRandomInt(0, items.length - 1)];
+
   while (currentDate <= end) {
-    // const revenueChance = Math.random(); // Random value between 0 and 1
-    const revenue = (getRandomInt(1000, 25000)).toFixed(2); // Random revenue between 1000 and 100000
-    const orders = getRandomInt(10, 100); // Random number of orders between 10 and 100
-    const picked = getRandomInt(10, 100).toFixed(2); // Random number of picked orders between 10 and 100
-    const delivered = getRandomInt(10, +picked).toFixed(2); // Random number of delivered orders between 10 and picked
+    const revenue = getRandomInt(1000, 25000).toFixed(2);
+    const orders = getRandomInt(10, 100);
+    const picked = getRandomInt(10, 100).toFixed(2);
+    const delivered = getRandomInt(10, +picked).toFixed(2);
 
     data.push({
-      date: currentDate.toISOString().split('T')[0], // Format: YYYY-MM-DD
+      date: currentDate.toISOString().split('T')[0],
       orders,
-      revenue: parseFloat(revenue), // Convert revenue to a float
+      revenue: parseFloat(revenue),
       picked: parseFloat(picked),
       delivered: parseFloat(delivered),
+      channel: getRandomItem(["shopify", "manual"]), // Randomly choose "shopify" or "manual"
+      zone: getRandomItem(["A", "B", "C", "D"]), // Randomly choose between "A", "B", "C", "D"
+      deliveryTimeline: getRandomInt(1, 10), // Random number of days between 1 and 10
     });
 
     // Increment the date by one day
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  // data[10].revenue = 0 
-  // data[10].orders = 0 
-  // data[4].orders = 0 
-  // data[4].revenue = 0 
-  // data[15].orders = 0 
-  // data[15].revenue = 0 
-
   return data;
 }
 
-export function generateRandomDashboardData(dateRange: any) {
-  const getRandomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
-  const ordersRevenue = generateRandomData(dateRange);
-  const result = {
-    highlight: {
+export function calculateZoneTotals(data: OrderRevenueData[]): Record<string, number> {
+  const zoneTotals = {
+    AB: 0,
+    C: 0,
+    D: 0,
+  };
+
+  data.forEach((entry) => {
+    if (entry.zone === "A" || entry.zone === "B") {
+      zoneTotals.AB += entry.orders; // Sum orders for zones A and B
+    } else if (entry.zone === "C") {
+      zoneTotals.C += entry.orders; // Sum orders for zone C
+    } else if (entry.zone === "D") {
+      zoneTotals.D += entry.orders; // Sum orders for zone D
+    }
+  });
+
+  return zoneTotals;
+}
+
+
+export function generateHighlights() {
+  const getRandomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;  
+    return {
       orders: {
         today: getRandomInt(0, 10),
         yesterday: getRandomInt(0, 10)
@@ -90,40 +100,45 @@ export function generateRandomDashboardData(dateRange: any) {
         today: getRandomInt(0, 5),
         yesterday: getRandomInt(0, 5)
       }
-    },
-    shipments: {
-      active: getRandomInt(5, 20),
-      yetToBePicked: getRandomInt(20, 50),
-      openShipments: getRandomInt(5, 20),
-      closedShipments: getRandomInt(50, 100)
-    },
-    ndr: {
-      raised: getRandomInt(0, 5),
-      active: getRandomInt(0, 5),
-      delivered: getRandomInt(0, 5),
-      rtoPostNdr: getRandomInt(0, 5)
-    },
-    ordersRevenue: ordersRevenue,
-    zoneDistribution: {
-      A: getRandomInt(0, 10),
-      B: getRandomInt(0, 10),
-      C: getRandomInt(0, 10),
-      D: getRandomInt(0, 10),
-      AB: getRandomInt(0, 20) // A + B combined
-    },
-    deliveryTimeline: {
-      days1to2: getRandomInt(0, 10),
-      days3to4: getRandomInt(0, 10),
-      days5: getRandomInt(0, 10),
-      daysMoreThan5: getRandomInt(0, 10),
-      avgDays: parseFloat((Math.random() * (7 - 1) + 1).toFixed(1)) // random average between 1 and 7
-    },
-    channelDistribution: {
-      manual: getRandomInt(10, 30), // Random total for manual
-      shopify: getRandomInt(0, 10)   // Random total for shopify
     }
-  };
-  console.log(result)
-  return result;
 }
 
+export function calculateDeliveryTimeTotals(data: OrderRevenueData[]): Record<string, number> {
+  const deliveryTimeTotals = {
+    "1-2 days": 0,
+    "3-4 days": 0,
+    "5 days": 0,
+    ">5 days": 0,
+  };
+
+  data.forEach((entry) => {
+    if (entry.deliveryTimeline >= 1 && entry.deliveryTimeline <= 2) {
+      deliveryTimeTotals["1-2 days"] += entry.orders;
+    } else if (entry.deliveryTimeline >= 3 && entry.deliveryTimeline <= 4) {
+      deliveryTimeTotals["3-4 days"] += entry.orders;
+    } else if (entry.deliveryTimeline === 5) {
+      deliveryTimeTotals["5 days"] += entry.orders;
+    } else if (entry.deliveryTimeline > 5) {
+      deliveryTimeTotals[">5 days"] += entry.orders;
+    }
+  });
+
+  return deliveryTimeTotals;
+}
+
+export function calculateChannelTotals(data: OrderRevenueData[]): Record<string, number> {
+  const channelTotals = {
+    shopify: 0,
+    manual: 0,
+  };
+
+  data.forEach((entry) => {
+    if (entry.channel === "shopify") {
+      channelTotals.shopify += entry.orders;
+    } else if (entry.channel === "manual") {
+      channelTotals.manual += entry.orders;
+    }
+  });
+
+  return channelTotals;
+}

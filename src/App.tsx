@@ -1,4 +1,4 @@
-import Layout from "./app/layout";
+import Layout from "./layout/dashboard/layout";
 import { ThemeProvider } from "@/components/theme-provider"
 import Dashboard from "./pages/Dashboard";
 

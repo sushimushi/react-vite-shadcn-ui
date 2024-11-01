@@ -144,6 +144,7 @@ export const OrderRevenueChart: React.FC<OrderRevenueChartProps> = ({ data, scal
         const lineSegments: OrderRevenueData[][] = [];
         let currentSegment: OrderRevenueData[] = [];
 
+        // @ts-ignore
         aggregatedData.forEach((d: OrderRevenueData) => {
             if (d.revenue > 0) {
                 currentSegment.push(d); // Add to current segment if revenue exists
