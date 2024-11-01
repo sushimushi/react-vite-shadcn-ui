@@ -45,7 +45,3 @@ Once the application is running, you can interact with the D3 graph to visualize
 ## Deployment
 
 The application is deployed on Vercel and can be accessed here: [https://ware-iq-dashboard.vercel.app/].
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
