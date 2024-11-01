@@ -10,6 +10,7 @@ import { ShoppingBag, DollarSign, BoxSelect, Truck } from 'lucide-react';
 import { generateRandomData, sectionTwoData, generateHighlights, calculateZoneTotals, calculateDeliveryTimeTotals, calculateChannelTotals } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PieChart from '@/components/charts/chart-pie';
+import ArcChart from "@/components/charts/chart-arc";
 import { DateRange } from "react-day-picker";
 
 
@@ -143,12 +144,14 @@ export default function Dashboard() {
                 ({date!.from!.toLocaleDateString()} to {date!.to!.toLocaleDateString()}) <AppTooltip Info={"some random info about the each card."} />
               </span>
             </h2>
-            <main className='p-4'>
-              { 
-              key == 'zoneDistribution' ? <PieChart data={calculateZoneTotals(revenueAndOrderData)} /> : 
-              key == 'deliveredTimeline' ?  <PieChart data={calculateDeliveryTimeTotals(revenueAndOrderData)} /> :
-              <PieChart data={calculateChannelTotals(revenueAndOrderData)} />
-              } 
+            <main className='p-4 grid items-center justify-center'>
+              <div className="">
+                { 
+                key == 'zoneDistribution' ? <PieChart data={calculateZoneTotals(revenueAndOrderData)} /> : 
+                key == 'deliveredTimeline' ?  <ArcChart className="mx-auto" data={calculateDeliveryTimeTotals(revenueAndOrderData)} /> :
+                <PieChart className="mx-auto" data={calculateChannelTotals(revenueAndOrderData)} />
+                } 
+              </div>
             </main>
           </Card>
         ))}
