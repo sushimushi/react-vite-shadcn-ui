@@ -98,13 +98,13 @@ export default function Dashboard() {
             </span>
           </h2>
           <main className='p-4'>
-            <div className='flex justify-between'>
+            <div className='flex justify-between flex-col md:flex-row gap-4'>
               <div className='flex gap-4 grow'>
                 <InfoCard label="Total Orders" value={calculateTotalOrders(revenueAndOrderData).toString()} />
                 <InfoCard label="Total Revenue" value={`₹${calculateTotalRevenue(revenueAndOrderData).toLocaleString('en-IN')}`} />
               </div>
 
-              <div className='flex gap-4'>
+              <div className='flex gap-4 max-w-md'>
                 <Select value={selectedScale} onValueChange={handleScaleChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select an option" />
@@ -135,7 +135,7 @@ export default function Dashboard() {
         </Card>
       </section>
 
-      <div className="grid grid-cols-2 gap-6 pt-8 pb-8">
+      <div className="grid md:grid-cols-2 gap-6 pt-8 pb-8">
         {Object.keys(pieChartMap).map((key, index) => (
           <Card key={index}>
             <h2 className="text-sm font-bold mb-2 uppercase p-4 border-b">
